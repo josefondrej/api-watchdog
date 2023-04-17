@@ -1,9 +1,9 @@
 import logging
 
-from api_watchdog.backend.requests_backend import make_request
 from api_watchdog.core.api_test_case import ApiTestCase
 from api_watchdog.core.api_test_case_result import ApiTestCaseResult
 from api_watchdog.core.api_test_case_result_status import ApiTestCaseResultStatus
+from api_watchdog.http_request_backends.requests_backend import make_request
 
 logger = logging.getLogger(__name__)
 
