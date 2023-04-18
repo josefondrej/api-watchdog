@@ -9,6 +9,7 @@ def test_to_dict():
     config = Config(
         api_test_cases=[
             ApiTestCase(
+                identifier='test-example-com',
                 url='http://example.com',
                 request_data=RequestData(
                     method=RequestMethod.GET,
@@ -26,6 +27,7 @@ def test_to_dict():
     assert config.to_dict() == {
         'api_test_cases': [
             {
+                'identifier': 'test-example-com',
                 'url': 'http://example.com',
                 'request_data': {
                     'method': 'GET',
@@ -46,6 +48,7 @@ def test_from_dict():
     config = Config.from_dict({
         'api_test_cases': [
             {
+                'identifier': 'test-example-com',
                 'url': 'http://example.com',
                 'request_data': {
                     'method': 'GET',
@@ -61,6 +64,7 @@ def test_from_dict():
         'request_frequency_sec': 1
     })
     assert len(config.api_test_cases) == 1
+    assert config.api_test_cases[0].identifier == 'test-example-com'
     assert config.api_test_cases[0].url == 'http://example.com'
     assert config.api_test_cases[0].request_data.method == RequestMethod.GET
     assert config.api_test_cases[0].request_data.body == {'foo': 'bar'}

@@ -6,12 +6,17 @@ from api_watchdog.core.serializable import Serializable
 
 
 class ApiTestCase(Serializable):
-    def __init__(self, url: str, request_data: RequestData, expected_response_data: ResponseData,
+    def __init__(self, identifier: str, url: str, request_data: RequestData, expected_response_data: ResponseData,
                  timeout_sec: float = 5.0):
+        self._identifier = identifier
         self._url = url
         self._request_data = request_data
         self._expected_response_data = expected_response_data
         self._timeout_sec = float(timeout_sec)
+
+    @property
+    def identifier(self) -> str:
+        return self._identifier
 
     @property
     def url(self) -> str:
@@ -31,6 +36,7 @@ class ApiTestCase(Serializable):
 
     def to_dict(self) -> Dict:
         return {
+            'identifier': self._identifier,
             'url': self._url,
             'request_data': self._request_data.to_dict(),
             'expected_response_data': self._expected_response_data.to_dict(),
@@ -40,6 +46,7 @@ class ApiTestCase(Serializable):
     @classmethod
     def from_dict(cls, data: Dict) -> 'ApiTestCase':
         return cls(
+            identifier=data['identifier'],
             url=data['url'],
             request_data=RequestData.from_dict(data['request_data']),
             expected_response_data=ResponseData.from_dict(data['expected_response_data']),

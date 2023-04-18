@@ -25,9 +25,10 @@ def mock_make_request_error(url, request_data, timeout_sec):
 @pytest.fixture
 def api_test_case():
     return ApiTestCase(
-        'http://example.com',
-        RequestData(RequestMethod.GET),
-        ResponseData(200, {'foo': 'bar'}),
+        identifier='test-example-com',
+        url='http://example.com',
+        request_data=RequestData(RequestMethod.GET),
+        expected_response_data=ResponseData(200, {'foo': 'bar'}),
         timeout_sec=1
     )
 
