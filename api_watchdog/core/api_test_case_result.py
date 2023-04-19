@@ -2,6 +2,7 @@ from typing import Optional, Dict
 
 from api_watchdog.core.api_test_case import ApiTestCase
 from api_watchdog.core.api_test_case_result_status import ApiTestCaseResultStatus
+from api_watchdog.core.compressed_api_test_case_result import CompressedApiTestCaseResult
 from api_watchdog.core.response_data import ResponseData
 from api_watchdog.core.serializable import Serializable
 
@@ -46,4 +47,16 @@ class ApiTestCaseResult(Serializable):
             status=ApiTestCaseResultStatus(data['status']),
             response_data=ResponseData.from_dict(data['response_data']) if data['response_data'] else None,
             exception=data['exception']
+        )
+
+    def compress(self) -> 'CompressedApiTestCaseResult':
+        compressed_response_data = None
+        if self.status != ApiTestCaseResultStatus.PASSED:
+            compressed_response_data = self.response_data
+
+        return CompressedApiTestCaseResult(
+            api_test_case_identifier=self.api_test_case.identifier,
+            status=self.status,
+            response_data=compressed_response_data,
+            exception=self.exception
         )

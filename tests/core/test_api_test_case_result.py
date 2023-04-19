@@ -50,3 +50,34 @@ def test_from_dict():
     assert api_test_case_result.status == ApiTestCaseResultStatus.PASSED
     assert api_test_case_result.response_data.status_code == 200
     assert api_test_case_result.response_data.body == {}
+
+
+def test_compress_passed():
+    api_test_case_result = ApiTestCaseResult(
+        api_test_case=ApiTestCase(
+            'test-example-com', 'http://example.com', RequestData(RequestMethod.GET), ResponseData(200), timeout_sec=1),
+        status=ApiTestCaseResultStatus.PASSED,
+        response_data=ResponseData(200)
+    )
+    compressed_api_test_case_result = api_test_case_result.compress()
+    assert compressed_api_test_case_result.api_test_case_identifier == 'test-example-com'
+    assert compressed_api_test_case_result.status == ApiTestCaseResultStatus.PASSED
+    assert compressed_api_test_case_result.exception is None
+    assert compressed_api_test_case_result.response_data is None
+
+
+def test_compress_not_passed():
+    api_test_case_result = ApiTestCaseResult(
+        api_test_case=ApiTestCase(
+            'test-example-com', 'http://example.com', RequestData(RequestMethod.GET), ResponseData(200), timeout_sec=1),
+        status=ApiTestCaseResultStatus.FAILED,
+        response_data=ResponseData(400),
+        exception='Exception'
+    )
+
+    compressed_api_test_case_result = api_test_case_result.compress()
+    assert compressed_api_test_case_result.api_test_case_identifier == 'test-example-com'
+    assert compressed_api_test_case_result.status == ApiTestCaseResultStatus.FAILED
+    assert compressed_api_test_case_result.exception == 'Exception'
+    assert compressed_api_test_case_result.response_data.status_code == 400
+    assert compressed_api_test_case_result.response_data.body == {}
