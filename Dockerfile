@@ -18,5 +18,4 @@ COPY . .
 EXPOSE 5000
 
 # Start python scripts /api_watchdog/frontend/app.py and /api_watchdog/monitoring/main.py in the background
-CMD ["python", "-u", "/app/api_watchdog/frontend/app.py", "&", "python", "-u", "/app/api_watchdog/monitoring/main.py"]
-
+CMD ["sh", "-c", "python /app/api_watchdog/monitoring/main.py & python /app/api_watchdog/frontend/app.py"]
