@@ -1,6 +1,8 @@
 import json
+from typing import List
 
 from flask import Flask, render_template, request
+from sqlalchemy import create_engine
 
 from api_watchdog import config
 from api_watchdog.core.api_test_case import ApiTestCase
@@ -8,10 +10,16 @@ from api_watchdog.core.config import Config
 from api_watchdog.core.request_data import RequestData
 from api_watchdog.core.request_method import RequestMethod
 from api_watchdog.core.response_data import ResponseData
-from api_watchdog.frontend.fake_test_case_histories import api_test_case_histories
+from api_watchdog.database.db_base import DbBase
+from api_watchdog.database.sqlite_db import SqliteDb
+from api_watchdog.frontend.api_test_case_history import ApiTestCaseHistory
 
 app = Flask(__name__)
 testing_config_file_path = config.CONFIG_FILE_PATH
+
+db_connection_string = config.DATABASE_CONNECTION_STRING
+engine = create_engine(db_connection_string)
+database = SqliteDb(engine)
 
 
 def parse_optional_dict_from_string(string: str) -> dict:
@@ -56,6 +64,12 @@ def parse_api_test_case_from_request():
     return api_test_case
 
 
+def load_api_test_case_history(api_test_case: ApiTestCase, database: DbBase) -> List[ApiTestCaseHistory]:
+    records = database.list_api_test_case_records(api_test_case_identifier=api_test_case.identifier)
+    api_test_case_history = ApiTestCaseHistory(test_case=api_test_case, records=records)
+    return api_test_case_history
+
+
 # Define routes for the two subpages
 @app.route('/add-test-case')
 def add_test_case():
@@ -64,13 +78,17 @@ def add_test_case():
 
 @app.route('/result/<string:test_case_id>')
 def result(test_case_id):
-    for api_test_case_history in api_test_case_histories:
-        if api_test_case_history.test_case.identifier == test_case_id:
-            return render_template('result.html', test_case_history=api_test_case_history)
+    testing_config = Config.from_file(testing_config_file_path)
+    api_test_case = testing_config.get_test_case(identifier=test_case_id)
+    api_test_case_history = load_api_test_case_history(api_test_case=api_test_case, database=database)
+    return render_template('result.html', test_case_history=api_test_case_history)
 
 
 @app.route('/')
 def results():
+    testing_config = Config.from_file(testing_config_file_path)
+    api_test_case_histories = [load_api_test_case_history(api_test_case, database=database)
+                               for api_test_case in testing_config.api_test_cases]
     return render_template('results.html', test_case_histories=api_test_case_histories)
 
 
