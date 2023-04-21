@@ -9,7 +9,6 @@ import api_watchdog.config as config
 from api_watchdog.core.api_test_case_result_status import ApiTestCaseResultStatus
 from api_watchdog.core.config import Config
 from api_watchdog.core.main import run_api_test_case
-from api_watchdog.core.utils import read_json_atomic
 from api_watchdog.database.sqlite_db import SqliteDb
 
 logger = logging.getLogger(__name__)
@@ -19,7 +18,7 @@ def run_monitoring(config_file_path: Union[Path, str], database: SqliteDb):
     logger.info(f'Starting monitoring; Config file: {config_file_path}; Database: {database}')
     while True:
         logger.info('Reading config file')
-        config = Config.from_dict(read_json_atomic(config_file_path))
+        config = Config.from_file(config_file_path)
 
         logger.info('Running api test cases')
         for api_test_case in config.api_test_cases:
