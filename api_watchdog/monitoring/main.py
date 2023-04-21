@@ -27,5 +27,6 @@ def run_monitoring(config_file_path: Union[Path, str]):
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    CONFIG_FILE_PATH = Path(__file__).parent.parent.parent / 'data' / 'config.json'
-    run_monitoring(config_file_path=CONFIG_FILE_PATH)
+    import api_watchdog.config as config
+
+    run_monitoring(config_file_path=config.CONFIG_FILE_PATH)
