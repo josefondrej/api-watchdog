@@ -1,3 +1,4 @@
+import os
 from typing import List, Optional, Dict
 
 from api_watchdog.core.api_test_case import ApiTestCase
@@ -46,4 +47,7 @@ class Config(Serializable):
 
     @classmethod
     def from_file(cls, file_path: str) -> 'Config':
+        if not os.path.exists(file_path):
+            return cls()
+
         return cls.from_dict(data=read_json_atomic(file_path=file_path))
