@@ -1,6 +1,8 @@
 import logging
+from datetime import datetime
 
 from api_watchdog.core.api_test_case import ApiTestCase
+from api_watchdog.core.api_test_case_record import ApiTestCaseRecord
 from api_watchdog.core.api_test_case_result import ApiTestCaseResult
 from api_watchdog.core.api_test_case_result_status import ApiTestCaseResultStatus
 from api_watchdog.http_request_backends.requests_backend import make_request
@@ -8,7 +10,7 @@ from api_watchdog.http_request_backends.requests_backend import make_request
 logger = logging.getLogger(__name__)
 
 
-def run_api_test_case(api_test_case: ApiTestCase) -> ApiTestCaseResult:
+def run_api_test_case(api_test_case: ApiTestCase) -> ApiTestCaseRecord:
     try:
         response_data = make_request(
             url=api_test_case.url,
@@ -17,13 +19,13 @@ def run_api_test_case(api_test_case: ApiTestCase) -> ApiTestCaseResult:
         )
 
         if response_data != api_test_case.expected_response_data:
-            return ApiTestCaseResult(
+            result = ApiTestCaseResult(
                 api_test_case=api_test_case,
                 status=ApiTestCaseResultStatus.FAILED,
                 response_data=response_data
             )
         else:
-            return ApiTestCaseResult(
+            result = ApiTestCaseResult(
                 api_test_case=api_test_case,
                 status=ApiTestCaseResultStatus.PASSED,
                 response_data=response_data
@@ -32,8 +34,13 @@ def run_api_test_case(api_test_case: ApiTestCase) -> ApiTestCaseResult:
     except Exception as exception:
         logger.exception(exception)
 
-        return ApiTestCaseResult(
+        result = ApiTestCaseResult(
             api_test_case=api_test_case,
             status=ApiTestCaseResultStatus.ERROR,
             exception=str(exception)
         )
+
+    return ApiTestCaseRecord(
+        result=result.compress(),
+        timestamp=datetime.now()
+    )

@@ -35,26 +35,26 @@ def api_test_case():
 
 def test_run_api_test_case_expected_response(api_test_case):
     with patch('api_watchdog.core.main.make_request', mock_make_request_expected_response):
-        api_test_case_result = run_api_test_case(api_test_case)
+        api_test_case_record = run_api_test_case(api_test_case)
 
-    assert api_test_case_result.status == ApiTestCaseResultStatus.PASSED
-    assert api_test_case_result.response_data.body == {'foo': 'bar'}
-    assert api_test_case_result.exception is None
+    assert api_test_case_record.result.status == ApiTestCaseResultStatus.PASSED
+    assert api_test_case_record.result.response_data is None
+    assert api_test_case_record.result.exception is None
 
 
 def test_run_api_test_case_unexpected_response(api_test_case):
     with patch('api_watchdog.core.main.make_request', mock_make_request_unexpected_response):
-        api_test_case_result = run_api_test_case(api_test_case)
+        api_test_case_record = run_api_test_case(api_test_case)
 
-    assert api_test_case_result.status == ApiTestCaseResultStatus.FAILED
-    assert api_test_case_result.response_data.body == {'foo': 'baz'}
-    assert api_test_case_result.exception is None
+    assert api_test_case_record.result.status == ApiTestCaseResultStatus.FAILED
+    assert api_test_case_record.result.response_data.body == {'foo': 'baz'}
+    assert api_test_case_record.result.exception is None
 
 
 def test_run_api_test_case_error(api_test_case):
     with patch('api_watchdog.core.main.make_request', mock_make_request_error):
-        api_test_case_result = run_api_test_case(api_test_case)
+        api_test_case_record = run_api_test_case(api_test_case)
 
-    assert api_test_case_result.status == ApiTestCaseResultStatus.ERROR
-    assert api_test_case_result.response_data is None
-    assert api_test_case_result.exception == 'Some error'
+    assert api_test_case_record.result.status == ApiTestCaseResultStatus.ERROR
+    assert api_test_case_record.result.response_data is None
+    assert api_test_case_record.result.exception == 'Some error'

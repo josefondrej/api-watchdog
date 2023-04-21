@@ -18,8 +18,8 @@ def run_monitoring(config_file_path: Union[Path, str]):
 
         logger.info('Running api test cases')
         for api_test_case in config.api_test_cases:
-            api_test_case_result = run_api_test_case(api_test_case)
-            print(api_test_case_result)  # TODO: Save to database
+            api_test_case_record = run_api_test_case(api_test_case)
+            print(api_test_case_record)  # TODO: Save to database
 
         logger.info(f'Waiting {config.request_frequency_sec} seconds')
         time.sleep(config.request_frequency_sec)
