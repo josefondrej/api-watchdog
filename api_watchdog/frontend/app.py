@@ -8,7 +8,6 @@ from api_watchdog.core.config import Config
 from api_watchdog.core.request_data import RequestData
 from api_watchdog.core.request_method import RequestMethod
 from api_watchdog.core.response_data import ResponseData
-from api_watchdog.core.utils import read_json_atomic, write_json_atomic
 from api_watchdog.frontend.fake_test_case_histories import api_test_case_histories
 
 app = Flask(__name__)
@@ -36,6 +35,27 @@ def parse_request_method_from_string(string: str) -> RequestMethod:
         raise ValueError(f'Invalid request method: {string}')
 
 
+def parse_api_test_case_from_request():
+    identifier = request.form.get('identifier')
+    url = request.form.get('url')
+    request_method = parse_request_method_from_string(request.form.get('method'))
+    request_body = parse_optional_dict_from_string(request.form.get('request_data'))
+    expected_response_status_code = int(request.form.get('status_code'))
+    expected_response_body = parse_optional_dict_from_string(request.form.get('expected_response_data'))
+    timeout_sec = int(request.form.get('timeout_sec'))
+
+    request_data = RequestData(method=request_method, body=request_body)
+    response_data = ResponseData(status_code=expected_response_status_code, body=expected_response_body)
+    api_test_case = ApiTestCase(
+        identifier=identifier,
+        url=url,
+        request_data=request_data,
+        expected_response_data=response_data,
+        timeout_sec=timeout_sec
+    )
+    return api_test_case
+
+
 # Define routes for the two subpages
 @app.route('/add-test-case')
 def add_test_case():
@@ -61,27 +81,10 @@ def process_new_test_case():
 
     try:
         if request.method == 'POST':
-            identifier = request.form.get('identifier')
-            url = request.form.get('url')
-            request_method = parse_request_method_from_string(request.form.get('method'))
-            request_body = parse_optional_dict_from_string(request.form.get('request_data'))
-            expected_response_status_code = int(request.form.get('status_code'))
-            expected_response_body = parse_optional_dict_from_string(request.form.get('expected_response_data'))
-            timeout_sec = int(request.form.get('timeout_sec'))
-
-            request_data = RequestData(method=request_method, body=request_body)
-            response_data = ResponseData(status_code=expected_response_status_code, body=expected_response_body)
-            api_test_case = ApiTestCase(
-                identifier=identifier,
-                url=url,
-                request_data=request_data,
-                expected_response_data=response_data,
-                timeout_sec=timeout_sec
-            )
-            testing_config_dict = read_json_atomic(file_path=testing_config_file_path)
-            testing_config = Config.from_dict(testing_config_dict)
+            api_test_case = parse_api_test_case_from_request()
+            testing_config = Config.from_file(testing_config_file_path)
             testing_config.add_api_test_case(api_test_case)
-            write_json_atomic(data=testing_config.to_dict(), file_path=testing_config_file_path)
+            testing_config.to_file(testing_config_file_path)
 
     except Exception as e:
         exception = e
