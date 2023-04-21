@@ -34,7 +34,9 @@ def run_monitoring(config_file_path: Union[Path, str], database: SqliteDb):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
+
     sqlite_engine = create_engine(config.DATABASE_CONNECTION_STRING)
     database = SqliteDb(sqlite_engine)
+
     run_monitoring(config_file_path=config.CONFIG_FILE_PATH, database=database)

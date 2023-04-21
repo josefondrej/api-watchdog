@@ -14,6 +14,9 @@ class ApiTestCase(Serializable):
         self._expected_response_data = expected_response_data
         self._timeout_sec = float(timeout_sec)
 
+    def __str__(self):
+        return f'ApiTestCase(identifier={self._identifier}, url={self._url})'
+
     @property
     def identifier(self) -> str:
         return self._identifier

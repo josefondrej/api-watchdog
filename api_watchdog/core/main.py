@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def run_api_test_case(api_test_case: ApiTestCase) -> ApiTestCaseRecord:
+    logger.info(f'Running api test case: {api_test_case}')
     try:
         response_data = make_request(
             url=api_test_case.url,
@@ -40,6 +41,7 @@ def run_api_test_case(api_test_case: ApiTestCase) -> ApiTestCaseRecord:
             exception=str(exception)
         )
 
+    logger.info(f'Api test case result status: {result.status} ({api_test_case})')
     return ApiTestCaseRecord(
         result=result.compress(),
         timestamp=datetime.now()

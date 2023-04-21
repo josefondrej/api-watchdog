@@ -130,7 +130,9 @@ def process_new_test_case():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
+
     HOST = '0.0.0.0'
     PORT = 5000
+
     serve(app, host=HOST, port=PORT)
