@@ -12,6 +12,9 @@ class ApiTestCaseHistory:
     @property
     def status(self) -> str:
         last_records = self.records[:100]
+        if len(self.records) == 0:
+            return 'warning'
+
         passed_percentage = sum(1 for record in last_records if record.result.status.value == 'PASSED') / len(
             last_records)
         if passed_percentage == 1:
