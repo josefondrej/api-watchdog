@@ -12,6 +12,9 @@ class SqliteDb(DbBase):
         self._engine = engine
         self.initialize()
 
+    def __str__(self):
+        return f'SqliteDb({self._engine.url})'
+
     def initialize(self):
         create_api_test_case_records_table_sql = """
         CREATE TABLE IF NOT EXISTS api_test_case_records (
