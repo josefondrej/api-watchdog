@@ -43,8 +43,25 @@ def parse_request_method_from_string(string: str) -> RequestMethod:
         raise ValueError(f'Invalid request method: {string}')
 
 
+def validate_identifier(identifier: str):
+    #     can only contain _,-,a-z,A-Z,0-9
+    #     must start with a-z,A-Z
+    #     must be at least 3 characters long
+    #     must be at most 100 characters long
+    if len(identifier) < 3:
+        raise ValueError('Identifier must be at least 3 characters long')
+    if len(identifier) > 100:
+        raise ValueError('Identifier must be at most 100 characters long')
+    if not identifier[0].isalpha():
+        raise ValueError('Identifier must start with a letter')
+    for char in identifier:
+        if not char.isalnum() and char not in ['_', '-']:
+            raise ValueError('Identifier can only contain letters, numbers, and _,-')
+
+
 def parse_api_test_case_from_request():
     identifier = request.form.get('identifier')
+    validate_identifier(identifier)
     url = request.form.get('url')
     request_method = parse_request_method_from_string(request.form.get('method'))
     request_body = parse_optional_dict_from_string(request.form.get('request_data'))
