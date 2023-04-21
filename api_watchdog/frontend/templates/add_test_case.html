@@ -1,7 +1,7 @@
 {% import 'macros.html' as macros %}
 
 {{ macros.header() }}
-<form>
+<form action="/process-new-test-case" method="post">
     <div class="form-group">
         <label for="identifier">Identifier</label>
         <input type="text" class="form-control form-control-sm" id="identifier" name="identifier" required>

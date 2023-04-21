@@ -1,0 +1,16 @@
+{% import 'macros.html' as macros %}
+
+{{ macros.header() }}
+{% if api_test_case %}
+<div class="alert alert-success" role="alert">
+    Successfully parsed API test case:
+    <pre>{{ api_test_case.to_dict() }}</pre>
+</div>
+{% endif %}
+{% if exception %}
+<div class="alert alert-danger" role="alert">
+    Failed to parse API test case: {{ exception }}
+</div>
+{% endif %}
+
+{{ macros.footer() }}
