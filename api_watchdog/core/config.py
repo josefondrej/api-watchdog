@@ -2,6 +2,7 @@ from typing import List, Optional, Dict
 
 from api_watchdog.core.api_test_case import ApiTestCase
 from api_watchdog.core.serializable import Serializable
+from api_watchdog.core.utils import write_json_atomic, read_json_atomic
 
 
 class Config(Serializable):
@@ -32,3 +33,10 @@ class Config(Serializable):
             api_test_cases=[ApiTestCase.from_dict(api_test_case_data) for api_test_case_data in data['api_test_cases']],
             request_frequency_sec=data['request_frequency_sec']
         )
+
+    def to_file(self, file_path: str):
+        write_json_atomic(data=self.to_dict(), file_path=file_path)
+
+    @classmethod
+    def from_file(cls, file_path: str) -> 'Config':
+        return cls.from_dict(data=read_json_atomic(file_path=file_path))
