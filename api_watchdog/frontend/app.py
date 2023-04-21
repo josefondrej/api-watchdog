@@ -6,9 +6,9 @@ app = Flask(__name__)
 
 
 # Define routes for the two subpages
-@app.route('/')
-def index():
-    return render_template('index.html')
+@app.route('/add-test-case')
+def add_test_case():
+    return render_template('add_test_case.html')
 
 
 @app.route('/result/<string:test_case_id>')
@@ -18,7 +18,7 @@ def result(test_case_id):
             return render_template('result.html', test_case_history=api_test_case_history)
 
 
-@app.route('/results')
+@app.route('/')
 def results():
     return render_template('results.html', test_case_histories=api_test_case_histories)
 
