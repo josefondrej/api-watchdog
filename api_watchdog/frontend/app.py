@@ -128,4 +128,8 @@ def process_new_test_case():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    from waitress import serve
+
+    HOST = '0.0.0.0'
+    PORT = 5000
+    serve(app, host=HOST, port=PORT)
