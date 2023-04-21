@@ -1,8 +1,10 @@
 import json
+import logging
 from typing import List
 
 from flask import Flask, render_template, request
 from sqlalchemy import create_engine
+from waitress import serve
 
 from api_watchdog import config
 from api_watchdog.core.api_test_case import ApiTestCase
@@ -128,8 +130,7 @@ def process_new_test_case():
 
 
 if __name__ == '__main__':
-    from waitress import serve
-
+    logging.basicConfig(level=logging.INFO)
     HOST = '0.0.0.0'
     PORT = 5000
     serve(app, host=HOST, port=PORT)
