@@ -1,0 +1,54 @@
+{% import 'macros.html' as macros %}
+
+{{ macros.header() }}
+<div class="card mb-4">
+    <div class="card-header bg-{{test_case_history.status}} text-white">
+        <h5 class="card-title mb-0">{{ test_case_history.test_case.identifier }}
+            <span class="badge badge-light ml-2">{{ test_case_history.test_case.request_data.method.value }}</span>
+        </h5>
+    </div>
+    <div class="card-body">
+        <p class="card-text"><strong>URL: </strong>{{ test_case_history.test_case.url }}</p>
+        <p class="card-text"><strong>Request Body: </strong></p>
+        <pre>{{ test_case_history.test_case.request_data.body }}</pre>
+        <p class="card-text"><strong>Expected Response Data: </strong></p>
+        <pre>Status Code: {{ test_case_history.test_case.expected_response_data.status_code }}</pre>
+        <pre>{{ test_case_history.test_case.expected_response_data.body }}</pre>
+        <p class="card-text"><strong>Timeout (s): </strong>
+        <pre>{{ test_case_history.test_case.timeout_sec }}</pre>
+        </p>
+        <p class="card-text"><strong>Results: </strong></p>
+        <ul class="list-group">
+            {% for record in test_case_history.records %}
+            <li class="list-group-item {% if record.result.status.value == 'PASSED' %}list-group-item-success{% elif record.result.status.value == 'ERROR' %}list-group-item-danger{% else %}list-group-item-warning{% endif %}">
+                <div class="row">
+                    <div class="col-md-3"><strong>Time: </strong>{{ record.timestamp }}</div>
+                    <div class="col-md-3"><strong>Status: </strong>{{ record.result.status.value }}</div>
+                </div>
+
+
+                {% if record.result.response_data is not none %}
+                <div class="row">
+                    <div class="col-md-3"><strong>Response: </strong></div>
+                    <div class="col-md-12">
+                        <pre>Code: {{ record.result.response_data.status_code }}</pre>
+                        <pre>Body: {{ record.result.response_data.body }}</pre>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if record.result.exception is not none %}
+                <div class="row">
+                    <div class="col-md-3"><strong>Exception: </strong></div>
+                    <div class="col-md-12">
+                        <pre>{{ record.result.exception }}</pre>
+                    </div>
+                </div>
+                {% endif %}
+
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{{ macros.footer() }}

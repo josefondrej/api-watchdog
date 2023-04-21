@@ -1,0 +1,23 @@
+{% import 'macros.html' as macros %}
+
+{{ macros.header() }}
+{% for test_case_history in test_case_histories %}
+<a class="card mb-4 text-dark card-link" href={{ url_for('result',
+test_case_id=test_case_history.test_case.identifier) }}>
+
+<div class="card-header bg-{{test_case_history.status}} text-white">
+    <h5 class="card-title mb-0">{{ test_case_history.test_case.identifier }}
+        <span class="badge badge-light ml-2" style="text-decoration: none">{{ test_case_history.test_case.request_data.method.value }}</span>
+    </h5>
+</div>
+
+<div class="card-body">
+    <p class="card-text">
+        <strong>URL: </strong>
+        {{ test_case_history.test_case.url }}
+    </p>
+</div>
+
+</a><br>
+{% endfor %}
+{{ macros.footer() }}

@@ -1,0 +1,42 @@
+{% import 'macros.html' as macros %}
+
+{{ macros.header() }}
+<form>
+    <div class="form-group">
+        <label for="identifier">Identifier</label>
+        <input type="text" class="form-control form-control-sm" id="identifier" name="identifier" required>
+    </div>
+    <div class="form-group">
+        <label for="url">URL</label>
+        <input type="text" class="form-control form-control-sm" id="url" name="url" required>
+    </div>
+    <div class="form-group">
+        <label for="request_data">Request Data</label>
+        <small class="form-text text-muted">Method</small>
+        <select class="form-control form-control-sm w-25" id="method" name="method" required>
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+        </select>
+        <small class="form-text text-muted">Body</small>
+        <textarea class="form-control" id="request_data" name="request_data"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="expected_response_data">Expected Response Data</label>
+        <small class="form-text text-muted">Status code</small>
+        <input type="number" class="form-control form-control-sm w-25" id="status_code" name="status_code"
+               value=200
+               min=100 max=599 required>
+        <small class="form-text text-muted">Body</small>
+        <textarea class="form-control" id="expected_response_data" name="expected_response_data"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="timeout_sec">Timeout (s)</label>
+        <input type="number" class="form-control form-control-sm w-25" id="timeout_sec" name="timeout_sec"
+               value=5
+               min=1 max=30 required>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{{ macros.footer() }}
