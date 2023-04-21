@@ -14,6 +14,13 @@ class Config(Serializable):
     def api_test_cases(self) -> List[ApiTestCase]:
         return self._api_test_cases
 
+    def get_test_case(self, identifier: str) -> Optional[ApiTestCase]:
+        for api_test_case in self._api_test_cases:
+            if api_test_case.identifier == identifier:
+                return api_test_case
+
+        return None
+
     @property
     def request_frequency_sec(self) -> int:
         return self._request_frequency_sec
