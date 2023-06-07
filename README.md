@@ -1,11 +1,19 @@
-# API Watchdog
+# 🐶 API Watchdog
 
 API Watchdog is a lightweight service that allows you to easily define and configure REST APIs to monitor. With API
 Watchdog, you can specify the APIs, request parameters, and expected response, and the service will periodically send
 requests to the specified APIs and validate if the responses match the expected results. This ensures that your APIs are
 functioning correctly and providing the expected responses.
 
-Features:
+## Getting Started
+
+Try out on local machine using Docker 🐋
+
+```
+docker run -p 5000:5000 josefondrej/api-watchdog
+```
+
+## Features
 
 - Periodic monitoring of user-specified REST APIs
 - Customizable request parameters and expected response
